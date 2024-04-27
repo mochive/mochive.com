@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /search
 
 Sitemap: https://mochive.com/sitemap.xml
