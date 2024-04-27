@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /search
 
-Sitemap: https://mochive.com/sitemap.xml
+Sitemap: https://beta.mochive.com/sitemap.xml
