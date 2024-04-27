@@ -1,5 +1,5 @@
 User-agent: *
-Allow: /
-Disallow: /search
-
-Sitemap: https://beta.mochive.com/sitemap.xml
+Allow : /$
+Allow: /favicon.ico
+Allow: /card.png
+Disallow: /
