@@ -1,0 +1,48 @@
+<script lang='ts'>
+	import { createEventDispatcher, onMount, type EventDispatcher } from 'svelte';
+	import AnticlockwiseDownwardsAndUpwardsOpenCircleArrows from '$lib/assets/anticlockwiseDownwardsAndUpwardsOpenCircleArrows.svg?component';
+
+	const dispatch: EventDispatcher<Record<'visible', unknown>> = createEventDispatcher();
+
+	let hasCalled: boolean = false;
+	let element!: HTMLLIElement;
+
+	onMount(function (): () => void {
+		const observer: IntersectionObserver = new IntersectionObserver(function (): void {
+			if(!hasCalled) {
+				hasCalled = true;
+			} else {
+				dispatch('visible');
+			}
+
+			return;
+		});
+
+		observer.observe(element);
+
+		return function (): void {
+			observer.unobserve(element);
+			
+			return;
+		};
+	});
+</script>
+
+<li bind:this={element}><AnticlockwiseDownwardsAndUpwardsOpenCircleArrows height=80 /></li>
+
+<style>
+	li {
+    max-width: 1000px;
+    width: 100%;
+		height: 120px;
+    border-radius: 20px;
+    background-color: #95a2af;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	:global(li > svg) {
+		animation: rotate 1s linear infinite;
+	}
+</style>
