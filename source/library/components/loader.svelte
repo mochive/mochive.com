@@ -41,6 +41,12 @@
 		justify-content: center;
 		align-items: center;
 	}
+	
+	@media (max-width: 612.77px) {
+		li {
+			height: 280px !important;
+		}
+	}
 
 	:global(li > svg) {
 		animation: rotate 1s linear infinite;
