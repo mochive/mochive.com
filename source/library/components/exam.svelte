@@ -6,33 +6,14 @@
 	import { fade } from 'svelte/transition';
 	import Preview from './preview.svelte';
 	import { loadImage } from '$lib/utility';
-	import { onMount} from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	export let exam: Exam;
+	export let previewUrl: Writable<string | null | undefined>;
 
 	let data: [ExamRank[], ExamAsset[]] | null | undefined;
 	let details!: HTMLDetailsElement;
-	let showOverlay: boolean = false;
-	let hasImageLoaded: boolean = false;
 	const images: HTMLImageElement[] = [];
-
-	onMount(function (): () => void {
-		function handleKeydown(event: KeyboardEvent) {
-			if(event['keyCode'] === 27) {
-				showOverlay = false;
-			}
-	
-			return;
-		}
-
-		window.addEventListener('keydown', handleKeydown);
-		
-		return function (): void {
-			window.removeEventListener('keydown', handleKeydown);
-
-			return;
-		};
-	});
 </script>
 
 <details bind:this={details} transition:fade>
@@ -92,18 +73,20 @@
 			<section class='preview'>
 				<h2>미리보기</h2>
 				<Preview source={'https://cdn.mochive.com' + data[1][0]['path'] + '.small.webp'} class='preview-small' on:click={function () {
-					showOverlay = true;
+					$previewUrl = null;
 
-					if(!hasImageLoaded) {
+					if(images['length'] !== 2) {
 						// @ts-expect-error
 						loadImage('https://cdn.mochive.com' + data[1][0]['path'] + '.webp')
 						.then(function (image) {
-							if(images['length'] !== 2) {
-								images.push(image);
-							}
+							images.push(image);
 							
-							hasImageLoaded = true;
+							$previewUrl = image['src'];
+
+							return;
 						});
+					} else {
+						$previewUrl = images[1]['src'];
 					}
 
 					return;
@@ -151,44 +134,10 @@
 				</ul>
 			</section>
 		</div>
-		{#if showOverlay}
-			<button class='overlay' transition:fade on:click={function (event) {
-				showOverlay = false;
-
-				return;
-			}}>
-				{#if hasImageLoaded}
-					<Preview source={'https://cdn.mochive.com' + data[1][0]['path'] + '.webp'} class='preview-big' />
-				{/if}
-				</button>
-		{/if}
 	{/if}
 </details>
 
 <style>
-	button.overlay {
-		border: 0;
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		left: 0;
-		top: 0;
-		background-color: #5c5c5c6e;
-		z-index: 1;
-		display: grid;
-		place-items: center;
-	}
-
-	:global(button.preview-big) {
-		cursor: zoom-out;
-	}
-
-	:global(button.preview-big > img) {
-		max-width: calc(100vw - 32px);
-		max-height: calc(100vh - 64px);
-		pointer-events: none;
-	}
-
 	:global(button.preview-small) {
 		cursor: zoom-in;
 	}

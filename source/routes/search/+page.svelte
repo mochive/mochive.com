@@ -4,6 +4,10 @@
 	import Logo from '$lib/assets/logo.svg?component';
 	import Footer from '$lib/components/footer.svelte';
 	import Loader from '$lib/components/loader.svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
+	import Preview from '$lib/components/preview.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: {
 		query: string;
@@ -11,16 +15,47 @@
 	};
 
 	let index: number = data['exams']['length'] === 50 ? 1 : -1;
+	const previewUrl: Writable<string | null | undefined> = writable<string | null | undefined>();
+	
+	onMount(function (): () => void {
+		function handleKeydown(event: KeyboardEvent) {
+			if(event['keyCode'] === 27) {
+				$previewUrl = undefined;
+			}
+	
+			return;
+		}
+
+		window.addEventListener('keydown', handleKeydown);
+		
+		return function (): void {
+			window.removeEventListener('keydown', handleKeydown);
+
+			return;
+		};
+	});
 </script>
 
 <nav>
 	<a href="/"><Logo height=40 /></a>
 </nav>
 <main>
+	{#if typeof($previewUrl) !== 'undefined'}
+		<button class='overlay' transition:fade on:click={function (event) {
+			$previewUrl = undefined;
+
+			return;
+		}}>
+		{#if typeof($previewUrl) === 'string'}
+			<Preview source={$previewUrl} class='preview-big' />
+		{/if}
+		</button>
+
+	{/if}
 	<ul>
 		{#each data['exams'] as exam, _index}
 			<li>
-				<Exam exam={exam} />
+				<Exam exam={exam} previewUrl={previewUrl} />
 			</li>
 
 			{#if index !== -1 && _index === data['exams']['length'] - 1}
@@ -59,6 +94,29 @@
 <Footer />
 
 <style>
+	button.overlay {
+		border: 0;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		background-color: #5c5c5c6e;
+		z-index: 1;
+		display: grid;
+		place-items: center;
+	}
+
+	:global(button.preview-big) {
+		cursor: zoom-out;
+	}
+
+	:global(button.preview-big > img) {
+		max-width: calc(100vw - 32px);
+		max-height: calc(100vh - 64px);
+		pointer-events: none;
+	}
+
 	@keyframes -global-rotate {
 		from {
 			transform: rotate(360deg);
