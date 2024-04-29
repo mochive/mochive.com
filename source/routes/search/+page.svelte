@@ -7,7 +7,6 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import Preview from '$lib/components/preview.svelte';
-	import { onMount } from 'svelte';
 
 	export let data: {
 		query: string;
@@ -16,26 +15,15 @@
 
 	let index: number = data['exams']['length'] === 50 ? 1 : -1;
 	const previewUrl: Writable<string | null | undefined> = writable<string | null | undefined>();
-	
-	onMount(function (): () => void {
-		function handleKeydown(event: KeyboardEvent) {
-			if(event['keyCode'] === 27) {
-				$previewUrl = undefined;
-			}
-	
-			return;
-		}
-
-		window.addEventListener('keydown', handleKeydown);
-		
-		return function (): void {
-			window.removeEventListener('keydown', handleKeydown);
-
-			return;
-		};
-	});
 </script>
 
+<svelte:window on:keydown={function (event) {
+	if(event['keyCode'] === 27) {
+		$previewUrl = undefined;
+	}
+	
+	return;
+}} />
 <nav>
 	<a href="/"><Logo height=40 /></a>
 </nav>
