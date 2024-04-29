@@ -126,7 +126,7 @@
 				<h2>다운로드</h2>
 				<ul>
 					{#each data[1] as asset}
-						<li><a href={'https://' + (asset['type'] === 3 && exam['grade'] === 3 && (exam['month'] === 6 || exam['month'] === 9 || exam['month'] === 11)  ? 'wdown.ebsi.co.kr/W61001/01exam' : 'cdn.mochive.com') + asset['path']} target='_blank' class='button'><svelte:component this={BUTTONS[asset['type'] - 1][0]} height=45 />{BUTTONS[asset['type'] - 1][1]}</a></li>
+						<li><a href={'https://' + (asset['type'] === 3 && (Number(exam['takenAt'].slice(0, 4)) >= 2024 || exam['grade'] === 3 && (exam['month'] === 6 || exam['month'] === 9 || exam['month'] === 11)) ? 'wdown.ebsi.co.kr/W61001/01exam' : 'cdn.mochive.com') + asset['path']} target='_blank' class='button'><svelte:component this={BUTTONS[asset['type'] - 1][0]} height=45 />{BUTTONS[asset['type'] - 1][1]}</a></li>
 					{/each}
 					{#each { length: 5 - data[1]['length'] } as _}
 						<li></li>
