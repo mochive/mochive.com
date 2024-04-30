@@ -13,13 +13,24 @@
 	}> = createEventDispatcher();
 </script>
 
-<button transition:fade class={_class} on:click={function () {
+<button class={_class} on:click={function () {
 	dispatch('click');
 
 	return;
 }}>
-	<img src={source} alt={source}>
-	<LeftPointingMagnifyingGlass class='preview' height=30 />
+	{#await new Promise(function (resolve, reject) {
+		const image = new Image();
+
+		image['src'] = source;
+
+		image.addEventListener('load', resolve);
+		image.addEventListener('error', reject);
+
+		return;
+	}) then}
+		<img transition:fade src={source} alt={source}>
+		<LeftPointingMagnifyingGlass class='preview' height=30 />
+	{/await}
 </button>
 
 <style>
@@ -27,6 +38,7 @@
 		position: relative;
 		border: 0;
 		background-color: transparent;
+		border-radius: 10px;
 	}
 	
 	img {

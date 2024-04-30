@@ -14,7 +14,7 @@
 	};
 
 	let index: number = data['exams']['length'] === 50 ? 1 : -1;
-	const previewUrl: Writable<string | null | undefined> = writable<string | null | undefined>();
+	const previewUrl: Writable<string | undefined> = writable<string | undefined>();
 </script>
 
 <svelte:window on:keydown={function (event) {
@@ -34,11 +34,8 @@
 
 			return;
 		}}>
-		{#if typeof($previewUrl) === 'string'}
 			<Preview source={$previewUrl} class='preview-big' />
-		{/if}
 		</button>
-
 	{/if}
 	<ul>
 		{#each data['exams'] as exam, _index}

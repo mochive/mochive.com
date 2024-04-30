@@ -122,23 +122,3 @@ export function getJsendResponse(data: unknown, status: JsendStatus = JsendStatu
 		}
 	});
 }
-
-export function loadImage(source: string): Promise<HTMLImageElement> {
-	return new Promise<HTMLImageElement>(function (resolve: (value: HTMLImageElement) => void): void {
-		const image: HTMLImageElement = new Image();
-
-		image['src'] = source;
-
-		function loadHandler() {
-			resolve(image);
-
-			image.removeEventListener('load', loadHandler);
-
-			return;
-		}
-	
-		image.addEventListener('load', loadHandler);
-
-		return;
-	});
-}

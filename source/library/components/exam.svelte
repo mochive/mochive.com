@@ -5,15 +5,13 @@
 	import AnticlockwiseDownwardsAndUpwardsOpenCircleArrows from '$lib/assets/anticlockwiseDownwardsAndUpwardsOpenCircleArrows.svg?component';
 	import { fade } from 'svelte/transition';
 	import Preview from './preview.svelte';
-	import { loadImage } from '$lib/utility';
 	import type { Writable } from 'svelte/store';
 
 	export let exam: Exam;
-	export let previewUrl: Writable<string | null | undefined>;
+	export let previewUrl: Writable<string | undefined>;
 
 	let data: [ExamRank[], ExamAsset[]] | null | undefined;
 	let details!: HTMLDetailsElement;
-	const images: HTMLImageElement[] = [];
 </script>
 
 <details bind:this={details} transition:fade>
@@ -33,16 +31,9 @@
 			})
 			.then(function (responseJsons) {
 				data = [responseJsons[0]['data'], responseJsons[1]['data']];
-				
-				
-				return loadImage('https://cdn.mochive.com' + data[1][0]['path'] + '.small.webp');
-			})
-			.then(function (image) {
-				images.push(image);
-				
 				details['open'] = true;
-
-				return;
+				
+				return ;
 			})
 			.catch(console.error);
 		}
@@ -73,21 +64,8 @@
 			<section class='preview'>
 				<h2>미리보기</h2>
 				<Preview source={'https://cdn.mochive.com' + data[1][0]['path'] + '.small.webp'} class='preview-small' on:click={function () {
-					$previewUrl = null;
-
-					if(images['length'] !== 2) {
-						// @ts-expect-error
-						loadImage('https://cdn.mochive.com' + data[1][0]['path'] + '.webp')
-						.then(function (image) {
-							images.push(image);
-							
-							$previewUrl = image['src'];
-
-							return;
-						});
-					} else {
-						$previewUrl = images[1]['src'];
-					}
+					// @ts-expect-error
+					$previewUrl = 'https://cdn.mochive.com' + data[1][0]['path'] + '.webp';
 
 					return;
 				}}/>
@@ -140,11 +118,8 @@
 <style>
 	:global(button.preview-small) {
 		cursor: zoom-in;
-	}
-
-	:global(button.preview-small > img) {
 		height: 400px;
-		width: 282.78px;
+		width: 282.77px;
 	}
 
 	details {
