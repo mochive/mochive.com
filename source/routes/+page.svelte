@@ -10,23 +10,71 @@
 	import LeftPointingMagnifyingGlass from '$lib/assets/leftPointingMagnifyingGlass.svg?component';
 	import { base64Encode } from '$lib/utility';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	const minimumYear: number = 2006;
 	const maximumYear: number = (new Date()).getFullYear();
-
+	
+	let term: string = '';
 	const gradeFlag: Writable<number> = writable<number>(0);
 	const subjectFlag: Writable<number> = writable<number>(0);
 	const monthFlag: Writable<number> = writable<number>(0);
 	const startYear: Writable<number> = writable<number>(minimumYear);
 	const endYear: Writable<number> = writable<number>(maximumYear);
+
+	onMount(function (): void {
+		const rawTerm: string | null = sessionStorage.getItem('term');
+		const rawGradeFlag: string | null = sessionStorage.getItem('gradeFlag');
+		const rawSubjectFlag: string | null = sessionStorage.getItem('subjectFlag');
+		const rawMonthFlag: string | null = sessionStorage.getItem('monthFlag');
+		const rawStartYear: string | null = sessionStorage.getItem('startYear');
+		const rawEndYear: string | null = sessionStorage.getItem('endYear');
 		
-	let term: string = '';
+		if(rawTerm !== null) {
+			term = rawTerm;
+		}
+
+		if(rawGradeFlag !== null) {
+			$gradeFlag = Number(rawGradeFlag);
+		}
+
+		if(rawSubjectFlag !== null) {
+			$subjectFlag = Number(rawSubjectFlag);
+		}
+
+		if(rawMonthFlag !== null) {
+			$monthFlag = Number(rawMonthFlag);
+		}
+
+		if(rawStartYear !== null) {
+			$startYear = Number(rawStartYear);
+		}
+
+		if(rawEndYear !== null) {
+			$endYear = Number(rawEndYear);
+		}
+
+		window.addEventListener('beforeunload', function (): void {
+			sessionStorage.clear();
+
+			return;
+		});
+
+		return;
+	});
 </script>
 
 <main>
 	<h1><Mochive id='logo' /></h1>
 	<form action='/search' on:submit={function (event) {
 		event.preventDefault();
+
+		sessionStorage.setItem('term', term);
+		sessionStorage.setItem('gradeFlag', String($gradeFlag));
+		sessionStorage.setItem('subjectFlag', String($subjectFlag));
+		sessionStorage.setItem('monthFlag', String($monthFlag));
+		sessionStorage.setItem('startYear', String($startYear));
+		sessionStorage.setItem('endYear', String($endYear));
 
 		goto('/search?query=' + base64Encode($gradeFlag + ',' + $subjectFlag + ',' + $monthFlag + ',' + $startYear + ',' + $endYear + ',' + term));
 
