@@ -54,12 +54,6 @@
 			$endYear = Number(rawEndYear);
 		}
 
-		window.addEventListener('beforeunload', function (): void {
-			sessionStorage.clear();
-
-			return;
-		});
-
 		return;
 	});
 </script>

@@ -2,6 +2,12 @@
 	import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 </script>
 
+<svelte:window on:beforeunload={function () {
+	sessionStorage.clear();
+
+	return;
+}} />
+
 <slot />
 
 <style>
