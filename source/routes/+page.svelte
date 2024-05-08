@@ -134,9 +134,14 @@
 <Footer />
 
 <style>
+	h1 {
+		width: 98%;
+		display: flex;
+		justify-content: center;
+	}
 
 	:global(svg#logo) {
-		width: 98%;
+		width: 100%;
 		max-width: 320px;
 	}
 
