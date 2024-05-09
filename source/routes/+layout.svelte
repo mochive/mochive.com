@@ -11,7 +11,7 @@
 
 <svelte:head>
   {@html '<script>partytown={forward:[\'dataLayer.push\']};' + partytownSnippet() + '</script>'}
-	{@html '<script type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>window[\'dataLayer\']=[];dataLayer.push([\'js\',new Date()],[\'config\', \'YOUR-ID-HERE\']);</script>'}
+	{@html '<script type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>dataLayer=[];dataLayer.push([\'js\',new Date()],[\'config\', \'YOUR-ID-HERE\']);</script>'}
 </svelte:head>
 
 <slot />
