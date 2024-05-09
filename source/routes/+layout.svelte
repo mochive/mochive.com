@@ -10,8 +10,13 @@
 }} />
 
 <svelte:head>
-  {@html '<script>partytown={forward:[\'dataLayer.push\']};' + partytownSnippet() + '</script>'}
-	{@html '<script type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>dataLayer=[];dataLayer.push([\'js\',new Date()],[\'config\', \'YOUR-ID-HERE\']);</script>'}
+<script>
+	partytown = {
+		forward: ['dataLayer.push', 'gtag']
+	};
+</script>
+  {@html '<script>' + partytownSnippet() + '</script>'}
+	{@html '<script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T"></script><script type="text/partytown">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'G-WZQZBE6Z4T\');</script>'}
 </svelte:head>
 
 <slot />
