@@ -1,6 +1,5 @@
 <script lang='ts'>
 	import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
-	import { partytownSnippet } from '@builder.io/partytown/integration';
 </script>
 
 <svelte:window on:beforeunload={function () {
@@ -8,16 +7,6 @@
 
 	return;
 }} />
-
-<svelte:head>
-<script>
-	partytown = {
-		forward: ['dataLayer.push', 'gtag']
-	};
-</script>
-  {@html '<script>' + partytownSnippet() + '</script>'}
-	{@html '<script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T"></script><script type="text/partytown">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'G-WZQZBE6Z4T\');</script>'}
-</svelte:head>
 
 <slot />
 
