@@ -10,7 +10,7 @@
 }} />
 
 <svelte:head>
-  {@html '<script>window[\'partytown\']={forward:[\'dataLayer.push\',\'gtag\']};' + partytownSnippet() + '</script>'}
+  {@html '<script>partytown={forward:[\'dataLayer.push\',\'gtag\']};' + partytownSnippet() + '</script>'}
 	{@html '<script async type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>window[\'dataLayer\']=[\'js\',new Date(),\'config\',\'G-WZQZBE6Z4T\'];</script>'}
 </svelte:head>
 
