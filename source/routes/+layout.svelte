@@ -10,8 +10,8 @@
 }} />
 
 <svelte:head>
-  {@html '<script>window[\'dataLayer\']=[];window[\'partytown\']={forward:[\'dataLayer.push\']};' + partytownSnippet() + '</script>'}
-	{@html '<script async type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>dataLayer.push(\'js\',new Date(),\'config\',\'G-WZQZBE6Z4T\');</script>'}
+  {@html '<script>partytown={forward:[\'dataLayer.push\']};' + partytownSnippet() + '</script>'}
+	{@html '<script type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>window[\'dataLayer\']=[];dataLayer.push([\'js\',new Date()],[\'config\', \'YOUR-ID-HERE\']);</script>'}
 </svelte:head>
 
 <slot />
