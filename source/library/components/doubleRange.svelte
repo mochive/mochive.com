@@ -13,8 +13,8 @@
 	let fill!: HTMLDivElement;
 
 	function updateFill(start: number, end: number): void {
-		fill['style']['width'] = 'calc(' + (Number(end) - Number(start)) / range * 100 + '% - 2px)';
-		fill['style']['left'] = 'calc(' + ((Number(start) - minimum) / range) * 100 + '% + 1px)';
+		fill['style']['width'] = Math.ceil((Number(end) - Number(start)) * 100 / range) + '%';
+		fill['style']['left'] = Math.floor((Number(start) - minimum) * 100 / range) + '%';
 
 		return;
 	}
@@ -28,7 +28,6 @@
 				
 				updateFill(start, $end);
 			} else {
-				//updateFill(minimum, $end);
 				$start = minimum;
 			}
 
@@ -43,7 +42,6 @@
 	
 				updateFill($start, end);
 			} else {
-				//updateFill($start, maximum);
 				$end = maximum;
 			}
 
@@ -148,6 +146,7 @@
 		position: absolute;
 		top: 6px;
 		pointer-events: none;
+		border-radius: 10px;
 	}
 	
 	div:hover > div.fill {
@@ -190,8 +189,7 @@
 		}
 
 		div.fill {
-			
-		top: 5.5px;
+			top: 5.5px;
 			height: 7px;
 		}
 		
