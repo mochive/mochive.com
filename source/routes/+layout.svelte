@@ -11,7 +11,7 @@
 
 <svelte:head>
   {@html '<script>window[\'partytown\']={forward:[\'dataLayer.push\',\'gtag\']};' + partytownSnippet() + '</script>'}
-	{@html '<script defer type=\'text/partytown\' src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token":"38c6f17baf9048be87e5d48ecbae00f4"}\'></script>'}
+	{@html '<script async type=\'text/partytown\' src=\'https://www.googletagmanager.com/gtag/js?id=G-WZQZBE6Z4T\'>window[\'dataLayer\']=[\'js\',new Date(),\'config\',\'G-WZQZBE6Z4T\'];</script>'}
 </svelte:head>
 
 <slot />
