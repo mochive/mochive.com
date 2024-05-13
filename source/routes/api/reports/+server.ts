@@ -1,8 +1,7 @@
 import { EMAIL_REGULAR_EXPRESSION, JsendStatus } from '$lib/constant';
 import { kysely } from '$lib/server/database';
-import type { Database, Exam, ExamAsset, ExamRank, Report } from '$lib/type';
+import type { Report } from '$lib/type';
 import { getJsendResponse } from '$lib/utility';
-import { sql, type InsertResult, type Transaction } from 'kysely';
 import type { RequestEvent } from '@sveltejs/kit';
 import { TURNSTILE_SECRET } from '$env/static/private';
 
