@@ -27,6 +27,13 @@ export interface ExamRank {
 	percentile: number;
 }
 
+export interface Report {
+	id: number;
+	email: string;
+	content: string;
+	createdAt: string;
+}
+
 type Generated<T> = T extends ColumnType<infer S, infer I, infer U> ? ColumnType<S, I | undefined, U> : ColumnType<T, T | undefined, T>;
 
 export interface Database {
@@ -53,5 +60,11 @@ export interface Database {
 		raw_score: number;
 		standard_score: number;
 		percentile: number;
+	};
+	report: {
+		id: Generated<number>;
+		email: string;
+		content: string;
+		createdAt: Generated<Date>;
 	};
 }

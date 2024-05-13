@@ -54,3 +54,5 @@ export const enum JsendStatus {
 }
 
 export const EXAM_RANK_SCORE_KEYS = ['rawScore', 'standardScore', 'percentile'] as const;
+
+export const EMAIL_REGULAR_EXPRESSION: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
