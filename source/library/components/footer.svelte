@@ -4,7 +4,7 @@
 
 <footer>
 	<p>Made with <HeavyBlackHeart height=16 />  by <a href='https://github.com/H2Owater425'>H2Owater425</a></p>
-	<p><a href='https://github.com/mochive'>Github</a>·<a href='mailto:support@mochive.com'>Email</a></p>
+	<p><a href='/report'>Report</a>·<a href='https://github.com/mochive'>Github</a>·<a href='mailto:support@mochive.com'>Email</a></p>
 </footer>
 
 <style>
