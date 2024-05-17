@@ -1,5 +1,2 @@
 User-agent: *
-Allow : /$
-Allow: /favicon.ico
-Allow: /card.png
-Disallow: /
+Disallow: /search
