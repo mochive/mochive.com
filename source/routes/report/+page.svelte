@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Footer from '$lib/components/footer.svelte';
-    import { EMAIL_REGULAR_EXPRESSION } from '$lib/constant';
+	import { EMAIL_REGULAR_EXPRESSION } from '$lib/constant';
 
 	let turnstile!: HTMLFieldSetElement;
 	let email!: HTMLInputElement;
@@ -70,7 +70,7 @@
 			<textarea placeholder='내용을 작성하시오.' minlength=1 maxlength=2048 required bind:this={content}></textarea>
 			<ol>
 				<li>① 모카이브를 사용해주셔서 정말 감사드립니다!</li>
-				<li>② 이 사이트는 학생 1인 개발이기 때문에 여러 오류가 있을 수 있습니다.</li>
+				<li>② 이 사이트는 학생 1인 개발이기에 여러 오류가 있을 수 있습니다.</li>
 				<li>③ 파일, 등급컷 등의 간단한 오류는 이 페이지를 통해 신고해주시고,</li>
 				<li>④ 첨부 파일이 필요한 경우는 <a href='mailto:support@mochive.com'>메일</a>로 신고를 부탁드리겠습니다.</li>
 				<li>⑤<span>✓</span><input type='email' id='email' placeholder='메일을 작성하시오.' required bind:this={email}></li>
@@ -151,10 +151,6 @@
 		label, li, input#email, h4, p, textarea, input#submit {
 			font-size: 16px;
 		}
-
-		section#notice {
-			margin-top: 16px !important;
-		}
 	}
 
 	section#information {
@@ -178,11 +174,11 @@
 
 	form {
 		width: 95%;
-		max-width: 500px;
+		max-width: 480px;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		max-height: 660px;
+		max-height: 740px;
 		height: 100%;
 	}
 
@@ -225,6 +221,6 @@
 		width: 100%;
 		padding: 16px;
 		border: 1px solid #000000;
-		margin-top: 32px;
+		margin-top: 16px;
 	}
 </style>
