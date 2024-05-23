@@ -11,7 +11,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"start": "node ./build",
 		"podman:build": "podman build --tag mochive --file Containerfile",
-		"podman:start": "podman run --detach --name mochive.com --publish 3006:3000 mochive"
+		"podman:start": "podman run --rm --name mochive.com --publish 3006:3000 mochive"
   },
   "repository": {
     "type": "git",
