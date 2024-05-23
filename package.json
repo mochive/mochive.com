@@ -9,7 +9,9 @@
     "preview": "vite preview --port 3006 --host --open",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"serve": "node ./build"
+		"start": "node ./build",
+		"podman:build": "podman build --tag mochive --file Containerfile",
+		"podman:start": "podman run --detach --name mochive.com --publish 3006:3000 mochive"
   },
   "repository": {
     "type": "git",
