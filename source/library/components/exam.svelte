@@ -263,12 +263,17 @@
 
 	summary {
 		display: flex;
-    justify-content: space-between;
+		justify-content: space-between;
 		align-items: center;
 		background-color: #f4f4f8;
-    border-radius: 20px;
+		border-radius: 20px;
 		height: 120px;
 		cursor: pointer;
+		list-style: none;
+	}
+
+	summary::marker, summary::-webkit-details-marker {
+		display: none;
 	}
 
 	summary:hover {
