@@ -48,7 +48,6 @@ export function GET(event: RequestEvent): Promise<Response> | Response {
 			}
 		})
 		.then(function (result: SearchResponse): number[] {
-			console.log(result['hits'])
 			const ids: number[] = [];
 
 			if(result['hits']['hits']['length'] !== 0) {
