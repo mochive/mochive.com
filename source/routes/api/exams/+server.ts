@@ -43,7 +43,7 @@ export function GET(event: RequestEvent): Promise<Response> | Response {
 			query: {
 				multi_match: {
 					query: event['url']['searchParams'].get('term') as string,
-					fields: ['name', 'name.korean^1.2', 'name.ngram^0.6', 'content', 'content.korean^1.2', 'content.english^1.5', 'content.ngram^0.6']
+					fields: ['name^2', 'name.korean^1.5', 'name.ngram^1.3', 'content', 'content.korean^0.5', 'content.english^0.7', 'content.ngram^0.3']
 				}
 			}
 		})
