@@ -1,0 +1,277 @@
+{
+	"mappings": {
+		"properties": {
+			"content": {
+				"type": "text",
+				"fields": {
+					"english": {
+						"type": "text",
+						"analyzer": "english_analyzer"
+					},
+					"korean": {
+						"type": "text",
+						"analyzer": "korean_analyzer"
+					},
+					"ngram": {
+						"type": "text",
+						"analyzer": "ngram_analyzer"
+					}
+				},
+				"analyzer": "standard"
+			},
+			"name": {
+				"type": "text",
+				"fields": {
+					"korean": {
+						"type": "text",
+						"analyzer": "korean_analyzer"
+					},
+					"ngram": {
+						"type": "text",
+						"analyzer": "ngram_analyzer"
+					}
+				},
+				"analyzer": "standard"
+			}
+		}
+	},
+	"settings": {
+		"index": {
+			"number_of_shards": "1",
+			"analysis": {
+				"filter": {
+					"english_possessive_stemmer": {
+						"type": "stemmer",
+						"language": "possessive_english"
+					},
+					"synonym": {
+						"type": "synonym_graph",
+						"synonyms": [
+							"모고, 모평, 모의고사, 모의평가, 학평, 학력평가",
+							"대학수학능력시험, 수능, 대수능",
+							"언어, 국어",
+							"수학, 수리",
+							"고등학교 1학년, 1학년 => 고1",
+							"고등학교 2학년, 2학년 => 고2",
+							"고등학교 3학년, 3학년 => 고3",
+							"3모 => 3월 학력평가, 3월 학평",
+							"4모 => 4월 학력평가, 4월 학평",
+							"6모 => 6월 모의평가, 6월 학력평가, 6월 학평",
+							"6평 => 6월 모의평가, 6월 학력평가, 6월 학평",
+							"7모 => 7월 학력평가, 7월 학평",
+							"9모 => 9월 모의평가, 9월 학력평가, 9월 학평",
+							"9평 => 9월 모의평가, 9월 학력평가, 9월 학평",
+							"10모 => 10월 학력평가, 10월 학평",
+							"11모 => 11월 학력평가, 11월 학평",
+							"사탐 => 사회탐구, 사회 과학탐구",
+							"과탐 => 과학탐구, 사회 과학탐구",
+							"직탐 => 직업탐구",
+							"화작 => 화법과 작문",
+							"언매 => 언어와 매체",
+							"확통 => 확률과 통계",
+							"미적 => 미적분",
+							"국사 => 한국사",
+							"물1, 물Ⅰ, 물원 => 물리Ⅰ",
+							"물2, 물Ⅱ, 물투 => 물리Ⅱ",
+							"화1, 화Ⅰ, 화원 => 화학Ⅰ",
+							"화2, 화Ⅱ, 화투 => 화학Ⅱ",
+							"생1, 생Ⅰ, 생원 => 생명과학Ⅰ",
+							"생2, 생Ⅱ, 생투 => 생명과학Ⅱ",
+							"지1, 지Ⅰ, 지학, 지원 => 지구과학Ⅰ",
+							"지2, 지Ⅱ, 지투 => 지구과학Ⅱ",
+							"윤사 => 윤리와 사상",
+							"생윤 => 생활과 윤리",
+							"동사, 동아사, 동아 => 동아시아사",
+							"세사 => 세계사",
+							"한지 => 한국지리",
+							"세지 => 세계지리",
+							"법정 => 법과 정치, 법과정치",
+							"정법 => 정치와 법, 정치와법",
+							"사문 => 사회문화, 사회·문화",
+							"법사 => 법과사회",
+							"농기초 => 농업 기초 기술, 농업기초기술",
+							"농업 => 농업 기초 기술, 농업기초기술",
+							"공일 => 공업 일반",
+							"상경 => 상업 경제, 상업경제",
+							"인발 => 인간 발달, 인간발달",
+							"성직 => 성공적인 직업 생활"
+						]
+					}
+				},
+				"analyzer": {
+					"english_analyzer": {
+						"filter": [
+							"lowercase",
+							"stop",
+							"trim",
+							"english_possessive_stemmer"
+						],
+						"type": "custom",
+						"tokenizer": "english_tokenizer"
+					},
+					"ngram_analyzer": {
+						"filter": [
+							"lowercase",
+							"stop",
+							"trim",
+							"english_possessive_stemmer",
+							"nori_part_of_speech"
+						],
+						"type": "custom",
+						"tokenizer": "ngram_tokenizer"
+					},
+					"korean_analyzer": {
+						"filter": [
+							"synonym",
+							"stop",
+							"trim",
+							"nori_part_of_speech"
+						],
+						"type": "custom",
+						"tokenizer": "korean_tokenizer"
+					}
+				},
+				"tokenizer": {
+					"english_tokenizer": {
+						"type": "whitespace",
+						"user_dictionary_rules": [
+							"cos",
+							"sin",
+							"tan",
+							"sec",
+							"csc",
+							"cot",
+							"log",
+							"ln",
+							"lim",
+							"int",
+							"sum",
+							"vec",
+							"sqrt",
+							"inf",
+							"nsubset",
+							"nsuperset",
+							"nin",
+							"->",
+							"<=",
+							">=",
+							"<=",
+							">=",
+							"!=",
+							"inter",
+							"beta",
+							"gamma",
+							"delta",
+							"epsilon",
+							"zeta",
+							"eta",
+							"theta",
+							"iota",
+							"kappa",
+							"lambda",
+							"mu",
+							"nu",
+							"xi",
+							"omicron",
+							"pi",
+							"rho",
+							"sigma",
+							"tau",
+							"upsilon",
+							"phi",
+							"chi",
+							"psi",
+							"omega"
+						]
+					},
+					"korean_tokenizer": {
+						"type": "nori_tokenizer",
+						"decompound_mode": "mixed",
+						"discard_punctuation": "false",
+						"user_dictionary_rules": [
+							"고등학교",
+							"언어",
+							"수학",
+							"3모",
+							"4모",
+							"6모",
+							"6평",
+							"7모",
+							"9모",
+							"9평",
+							"10모",
+							"11모",
+							"사탐",
+							"과탐",
+							"직탐",
+							"화작",
+							"언매",
+							"확통",
+							"미적",
+							"국사",
+							"물1",
+							"물2",
+							"화1",
+							"화2",
+							"생1",
+							"생2",
+							"지1",
+							"지2",
+							"윤사",
+							"생윤",
+							"동사",
+							"세사",
+							"한지",
+							"세지",
+							"법정",
+							"정법",
+							"사문",
+							"법사",
+							"농기초",
+							"농업",
+							"공일",
+							"상경",
+							"인발",
+							"성직",
+							"물Ⅰ",
+							"물원",
+							"물Ⅱ",
+							"물투",
+							"화Ⅰ",
+							"화원",
+							"화Ⅱ",
+							"화투",
+							"생Ⅰ",
+							"생원",
+							"생Ⅱ",
+							"생투",
+							"지Ⅰ",
+							"지학",
+							"지Ⅱ",
+							"지투",
+							"동아사",
+							"동아",
+							"모의고사",
+							"모의평가",
+							"모고",
+							"모평",
+							"학력평가",
+							"학평",
+							"대학수학능력시험",
+							"수능",
+							"대수능",
+							"세계사",
+							"성공적인"
+						]
+					},
+					"ngram_tokenizer": {
+						"type": "ngram",
+						"min_gram": "2",
+						"max_gram": "3"
+					}
+				}
+			},
+			"number_of_replicas": "0"
+		}
+	}
+}
