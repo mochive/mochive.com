@@ -18,7 +18,7 @@ export function GET(event: RequestEvent): Promise<Response> | Response {
 			size = Number(event['url']['searchParams'].get('page[size]'));
 
 			if(!Number.isInteger(size) || size < 1 || size > 128) {
-				throw getJsendResponse('Query[\'page[order]\'] must be between 1 and 128');
+				throw getJsendResponse('Query[\'page[size]\'] must be natural number');
 			}
 		} else {
 			size = 50;
