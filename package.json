@@ -9,15 +9,15 @@
     "preview": "vite preview --port 3006 --host --open",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"start": "node ./build",
-		"podman:build": "podman build --tag mochive --file Containerfile",
-		"podman:start": "podman run --rm --name mochive.com --publish 3006:3000 mochive"
+    "start": "node ./build",
+    "podman:build": "podman build --tag mochive --file Containerfile",
+    "podman:start": "podman run --rm --name mochive.com --publish 3006:3000 mochive"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mochive/mochive.com.git"
   },
-  "author": "H2Owater425 <h2o@h2owr.xyz>",
+  "author": "H2Owater425 <h2o@dhmo.kr>",
   "bugs": {
     "url": "https://github.com/mochive/mochive.com/issues"
   },
