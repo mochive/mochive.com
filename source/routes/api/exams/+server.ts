@@ -39,7 +39,7 @@ export function GET(event: RequestEvent): Promise<Response> | Response {
 			size: size,
 			from: size * index,
 			_source: false,
-			min_score: 0.5,
+			min_score: 0.2,
 			query: {
 				multi_match: {
 					query: event['url']['searchParams'].get('term') as string,
