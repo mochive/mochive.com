@@ -130,6 +130,7 @@
 			<DoubleRange start={startYear} end={endYear} minimum={minimumYear} maximum={maximumYear} />
 		</fieldset>
 	</form>
+	<a href="https://github.com/mochive/mochive.com/blob/main/RECRUITING.md" id="recruiting">모카이브 팀과 함께하실 분을 모집합니다!</a>
 </main>
 <Footer />
 
@@ -137,6 +138,11 @@
 	:global(svg#logo) {
 		width: 100%;
 		max-width: 320px;
+	}
+
+	#recruiting, #recruiting:visited, #recruiting:active {
+		text-decoration: none;
+		color: #0ab498;
 	}
 
 	main {
