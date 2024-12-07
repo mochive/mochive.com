@@ -8,8 +8,7 @@ import { DATABASE_URL, SEARCH_DATABASE_URL } from '$env/static/private';
 export const kysely: Kysely<Database> = new Kysely<Database>({
 	dialect: new PostgresDialect({
 		pool: new pg.Pool({
-			connectionString: DATABASE_URL,
-			options: "-c search_path=mochive"
+			connectionString: DATABASE_URL
 		})
 	})
 });
