@@ -1,5 +1,4 @@
 <script lang='ts'>
-	import { writable, type Writable } from 'svelte/store';
 	import Checkbox from '$lib/components/checkbox.svelte';
 	import DoubleRange from '$lib/components/doubleRange.svelte';
 	import Footer from '$lib/components/footer.svelte';
@@ -15,12 +14,12 @@
 	const minimumYear: number = 2006;
 	const maximumYear: number = (new Date()).getFullYear();
 	
-	let term: string = '';
-	const gradeFlag: Writable<number> = writable<number>(0);
-	const subjectFlag: Writable<number> = writable<number>(0);
-	const monthFlag: Writable<number> = writable<number>(0);
-	const startYear: Writable<number> = writable<number>(minimumYear);
-	const endYear: Writable<number> = writable<number>(maximumYear);
+	let term: string = $state<string>('');
+	let gradeFlag: number = $state<number>(0);
+	let subjectFlag: number = $state<number>(0);
+	let monthFlag: number = $state<number>(0);
+	let startYear: number = $state<number>(minimumYear);
+	let endYear: number = $state<number>(maximumYear);
 
 	onMount(function (): void {
 		const rawTerm: string | null = sessionStorage.getItem('term');
@@ -35,23 +34,23 @@
 		}
 
 		if(rawGradeFlag !== null) {
-			$gradeFlag = Number(rawGradeFlag);
+			gradeFlag = Number(rawGradeFlag);
 		}
 
 		if(rawSubjectFlag !== null) {
-			$subjectFlag = Number(rawSubjectFlag);
+			subjectFlag = Number(rawSubjectFlag);
 		}
 
 		if(rawMonthFlag !== null) {
-			$monthFlag = Number(rawMonthFlag);
+			monthFlag = Number(rawMonthFlag);
 		}
 
 		if(rawStartYear !== null) {
-			$startYear = Number(rawStartYear);
+			startYear = Number(rawStartYear);
 		}
 
 		if(rawEndYear !== null) {
-			$endYear = Number(rawEndYear);
+			endYear = Number(rawEndYear);
 		}
 
 		return;
@@ -60,17 +59,17 @@
 
 <main>
 	<h1><Mochive id='logo' /></h1>
-	<form action='/search' on:submit={function (event) {
+	<form action='/search' onsubmit={function (event: SubmitEvent): void {
 		event.preventDefault();
 
 		sessionStorage.setItem('term', term);
-		sessionStorage.setItem('gradeFlag', String($gradeFlag));
-		sessionStorage.setItem('subjectFlag', String($subjectFlag));
-		sessionStorage.setItem('monthFlag', String($monthFlag));
-		sessionStorage.setItem('startYear', String($startYear));
-		sessionStorage.setItem('endYear', String($endYear));
+		sessionStorage.setItem('gradeFlag', String(gradeFlag));
+		sessionStorage.setItem('subjectFlag', String(subjectFlag));
+		sessionStorage.setItem('monthFlag', String(monthFlag));
+		sessionStorage.setItem('startYear', String(startYear));
+		sessionStorage.setItem('endYear', String(endYear));
 
-		goto('/search?query=' + base64Encode($gradeFlag + ',' + $subjectFlag + ',' + $monthFlag + ',' + $startYear + ',' + $endYear + ',' + term));
+		goto('/search?query=' + base64Encode(gradeFlag + ',' + subjectFlag + ',' + monthFlag + ',' + startYear + ',' + endYear + ',' + term));
 
 		return;
 	}}>
@@ -80,54 +79,54 @@
 		</fieldset>
 	
 		<fieldset>
-			<Checkbox group='grade' flag={gradeFlag} unit={0b111}><GraduationCap class='icon' /></Checkbox>
-			<Checkbox group='grade' flag={gradeFlag} unit={0b001}>1학년</Checkbox>
-			<Checkbox group='grade' flag={gradeFlag} unit={0b010}>2학년</Checkbox>
-			<Checkbox group='grade' flag={gradeFlag} unit={0b100}>3학년</Checkbox>
+			<Checkbox group='grade' bind:flag={gradeFlag} unit={0b111}><GraduationCap class='icon' /></Checkbox>
+			<Checkbox group='grade' bind:flag={gradeFlag} unit={0b001}>1학년</Checkbox>
+			<Checkbox group='grade' bind:flag={gradeFlag} unit={0b010}>2학년</Checkbox>
+			<Checkbox group='grade' bind:flag={gradeFlag} unit={0b100}>3학년</Checkbox>
 		</fieldset>
 	
 		<fieldset>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b11111111}><ClosedBook class='icon' /></Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00000001}>국어</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00000010}>수학</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00000100}>영어</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00001000}>한국사</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00010000}>사회탐구</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b00100000}>과학탐구</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b01000000}>직업탐구</Checkbox>
-			<Checkbox group='subject' flag={subjectFlag} unit={0b10000000}>제2외국어</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b11111111}><ClosedBook class='icon' /></Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00000001}>국어</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00000010}>수학</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00000100}>영어</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00001000}>한국사</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00010000}>사회탐구</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b00100000}>과학탐구</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b01000000}>직업탐구</Checkbox>
+			<Checkbox group='subject' bind:flag={subjectFlag} unit={0b10000000}>제2외국어</Checkbox>
 		</fieldset>
 	
 		<fieldset>
-			<Checkbox group='month' flag={monthFlag} unit={0b1111111}><SpiralCalendar class='icon' /></Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0000001}>3월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0000010}>4월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0000100}>6월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0001000}>7월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0010000}>9월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b0100000}>10월</Checkbox>
-			<Checkbox group='month' flag={monthFlag} unit={0b1000000}>11월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b1111111}><SpiralCalendar class='icon' /></Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0000001}>3월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0000010}>4월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0000100}>6월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0001000}>7월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0010000}>9월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b0100000}>10월</Checkbox>
+			<Checkbox group='month' bind:flag={monthFlag} unit={0b1000000}>11월</Checkbox>
 		</fieldset>
 
 		<fieldset id='year'>
 			<div id='year-inputs'>
-				<input type="number" min={minimumYear} max={maximumYear} value={$startYear} on:change={function (event) {
+				<input type="number" min={minimumYear} max={maximumYear} bind:value={startYear} onchange={function (event) {
 					if(event['currentTarget']['valueAsNumber'] >= minimumYear && event['currentTarget']['valueAsNumber'] <= maximumYear) {
-						$startYear = event['currentTarget']['valueAsNumber'];
+						startYear = event['currentTarget']['valueAsNumber'];
 					}
 
 					return;
 				}}>
 				<div></div>
-				<input type="number" min={minimumYear} max={maximumYear} value={$endYear} on:change={function (event) {
+				<input type="number" min={minimumYear} max={maximumYear} bind:value={endYear} onchange={function (event) {
 					if(event['currentTarget']['valueAsNumber'] <= maximumYear && event['currentTarget']['valueAsNumber'] >= minimumYear) {
-						$endYear = event['currentTarget']['valueAsNumber'];
+						endYear = event['currentTarget']['valueAsNumber'];
 					}
 
 					return;
 				}}>
 			</div>
-			<DoubleRange start={startYear} end={endYear} minimum={minimumYear} maximum={maximumYear} />
+			<DoubleRange bind:start={startYear} bind:end={endYear} minimum={minimumYear} maximum={maximumYear} />
 		</fieldset>
 	</form>
 	<a href="https://github.com/mochive/mochive.com/blob/main/RECRUITING.md" id="recruiting">모카이브 팀과 함께하실 분을 모집합니다!</a>
@@ -135,9 +134,15 @@
 <Footer />
 
 <style>
-	:global(svg#logo) {
-		width: 100%;
-		max-width: 320px;
+	:global {
+		svg#logo {
+			width: 100%;
+			max-width: 320px;
+		}
+
+		svg.icon {
+			height: 18px;
+		}
 	}
 
 	#recruiting, #recruiting:visited, #recruiting:active {
@@ -245,9 +250,5 @@
 
 	#year-inputs > input:last-child {
 		margin-right: -16px;
-	}
-
-	:global(svg.icon) {
-		height: 18px;
 	}
 </style>

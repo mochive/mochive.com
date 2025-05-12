@@ -1,18 +1,20 @@
 <script lang='ts'>
-	import { createEventDispatcher, onMount, type EventDispatcher } from 'svelte';
+	import { onMount } from 'svelte';
 	import AnticlockwiseDownwardsAndUpwardsOpenCircleArrows from '$lib/assets/anticlockwiseDownwardsAndUpwardsOpenCircleArrows.svg?component';
 
-	const dispatch: EventDispatcher<Record<'visible', unknown>> = createEventDispatcher();
+	const { onvisible }: {
+		onvisible: () => void;
+	} = $props();
 
 	let hasCalled: boolean = false;
-	let element!: HTMLLIElement;
+	let element: HTMLLIElement = $state<HTMLLIElement>() as HTMLLIElement;
 
 	onMount(function (): () => void {
 		const observer: IntersectionObserver = new IntersectionObserver(function (): void {
 			if(!hasCalled) {
 				hasCalled = true;
 			} else {
-				dispatch('visible');
+				onvisible();
 			}
 
 			return;
@@ -48,7 +50,9 @@
 		}
 	}
 
-	:global(li > svg) {
-		animation: rotate 1s linear infinite;
+	:global {
+		li > svg {
+			animation: rotate 1s linear infinite;
+		}
 	}
 </style>

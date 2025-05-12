@@ -19,7 +19,7 @@ export function GET(event: RequestEvent<{
 			.where('id', '=', id)
 			.executeTakeFirst()
 			.then(function (exam?: Pick<Exam, 'month' | 'grade' | 'subject'>): Promise<Pick<ExamRank, 'id' | 'grade' | 'rawScore' | 'standardScore' | 'percentile'>[]> | Pick<ExamRank, 'id' | 'grade' | 'rawScore' | 'standardScore' | 'percentile'>[] {
-				if(typeof(exam) !== 'undefined') {
+				if(exam !== undefined) {
 					return transaction.selectFrom('exam_rank')
 					.select(['id', 'grade', 'raw_score as rawScore', 'standard_score as standardScore', 'percentile'])
 					.where('exam_id', '=', id)

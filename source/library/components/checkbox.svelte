@@ -1,36 +1,33 @@
 <script lang='ts'>
-	import { onMount } from 'svelte';
-	import type { Unsubscriber } from 'svelte/motion';
-	import type { Writable } from 'svelte/store';
+	import type { Snippet } from 'svelte';
 
-	export let flag: Writable<number>;
-	export let unit: number;
-	export let group: string;
+	let {
+		flag = $bindable(),
+		unit,
+		group,
+		children
+	}: {
+		flag: number;
+		unit: number;
+		group: string;
+		children: Snippet;
+	} = $props();
 
 	const id: string = group + unit;
-
-	let input!: HTMLInputElement;
-
-	onMount(function (): Unsubscriber {
-		return flag.subscribe(function (flag: number): void {
-			input['checked'] = (flag & unit) !== 0;
-
-			return;
-		});
-	});
+	const isChecked: boolean = $derived((flag & unit) !== 0);
 </script>
 
-<input type='checkbox' id={id} bind:this={input} on:change={function () {
-	if(($flag & unit) !== 0) {
-		$flag &= $flag ^ unit;
+<input type='checkbox' id={id} checked={isChecked} onchange={function (): void {
+	if(isChecked) {
+		flag &= flag ^ unit;
 	} else {
-		$flag |= unit;
+		flag |= unit;
 	}
 
 	return;
 }}>
 <label for={id}>
-	<slot />
+	{@render children()}
 </label>
 
 <style>
@@ -40,8 +37,10 @@
 			font-size: 17px !important;
 		}
 
-		:global(label > svg) {
-			height: 17px !important;
+		:global {
+			label > svg {
+				height: 17px !important;
+			}
 		}
 	}
 

@@ -1,36 +1,21 @@
 <script lang='ts'>
 	import LeftPointingMagnifyingGlass from '$lib/assets/leftPointingMagnifyingGlass.svg?component';
-	import { createEventDispatcher, type EventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	
-	export let source: string;
-	let _class = '';
-
-	export { _class as class };
-
-	const dispatch: EventDispatcher<{
-		'click': unknown;
-	}> = createEventDispatcher();
+	let {
+		source,
+		class: _class = '',
+		onclick
+	}: {
+		source: string;
+		class?: string;
+		onclick?: () => void;
+	} = $props();
 </script>
 
-<button class={_class} on:click={function () {
-	dispatch('click');
-
-	return;
-}}>
-	{#await new Promise(function (resolve, reject) {
-		const image = new Image();
-
-		image['src'] = source;
-
-		image.addEventListener('load', resolve);
-		image.addEventListener('error', reject);
-
-		return;
-	}) then}
-		<img transition:fade src={source} alt={source}>
-		<LeftPointingMagnifyingGlass class='preview' height=30 />
-	{/await}
+<button class={_class} onclick={onclick}>
+	<img transition:fade src={source} alt={source}>
+	<LeftPointingMagnifyingGlass class='preview' height=30 />
 </button>
 
 <style>
@@ -47,9 +32,11 @@
 		max-height: 100%;
 	}
 
-	:global(.preview) {
-		position: absolute;
-		bottom: 9px;
-		right: 6px;
+	:global {
+		.preview {
+			position: absolute;
+			bottom: 9px;
+			right: 6px;
+		}
 	}
 </style>

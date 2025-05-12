@@ -19,7 +19,7 @@ export function GET(event: RequestEvent<{
 			.where('id', '=', id)
 			.executeTakeFirst()
 			.then(function (exam?: Pick<Exam, 'id'>): Promise<Pick<ExamAsset, 'id' | 'type' | 'path'>[]> {
-				if(typeof(exam) !== 'undefined') {
+				if(exam !== undefined) {
 					return transaction.selectFrom('exam_asset')
 					.select(['id', 'type', 'path'])
 					.where('exam_id', '=', id)

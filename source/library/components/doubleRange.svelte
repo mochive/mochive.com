@@ -1,66 +1,49 @@
 <script lang='ts'>
-	import { onMount } from 'svelte';
-	import type { Unsubscriber } from 'svelte/motion';
-	import { type Writable } from 'svelte/store';
-
-	export let start: Writable<number>;
-	export let end: Writable<number>;
-	export let minimum: number;
-	export let maximum: number;
+	let {
+		start = $bindable(),
+		end = $bindable(),
+		minimum,
+		maximum
+	}: {
+		start: number;
+		end: number;
+		minimum: number;
+		maximum: number;
+	} = $props();
 
 	const range: number = maximum - minimum;
-
-	let fill!: HTMLDivElement;
-
-	function updateFill(start: number, end: number): void {
-		fill['style']['width'] = Math.ceil((Number(end) - Number(start)) * 100 / range) + '%';
-		fill['style']['left'] = Math.floor((Number(start) - minimum) * 100 / range) + '%';
-
-		return;
-	}
-
-	onMount(function (): () => void {
-		const unsubscribeStart: Unsubscriber = start.subscribe(function (start: number): void {
-			if($start >= minimum) {
-				if(start > $end) {
-					$end = start;
-				}
-				
-				updateFill(start, $end);
-			} else {
-				$start = minimum;
-			}
-
-			return;
-		});
-
-		const unsubscribeEnd: Unsubscriber = end.subscribe(function (end: number): void {
-			if($end <= maximum) {
-				if(end < $start) {
-					$start = end;
-				}
 	
-				updateFill($start, end);
+	let previousEnd: number = end;
+	let fill: HTMLDivElement = $state<HTMLDivElement>() as HTMLDivElement;
+
+	$effect(function (): void {
+		if(start < minimum) {
+			start = minimum;
+		}
+
+		if(end > maximum) {
+			end = maximum;
+		}
+
+		if(start > end) {
+			if(end === previousEnd) {
+				end = start;
 			} else {
-				$end = maximum;
+				start = end;
 			}
+		}
 
-			return;
-		});
+		previousEnd = end;
 
-		return function (): void {
-			unsubscribeStart();
-			unsubscribeEnd();
-
-			return;
-		};
+		fill['style']['width'] = ((end - start) * 100 / range) + '%';
+		fill['style']['left'] = (((start - minimum) * 100 / range) + (minimum - start + maximum - end) * 0.1) + '%';
 	});
 </script>
 
 <div>
 	<div class='fill' bind:this={fill}></div>
-	<input type='range' min={minimum} max={maximum} bind:value={$start}>
-	<input type='range' min={minimum} max={maximum} bind:value={$end}>
+	<input type='range' min={minimum} max={maximum} bind:value={start}>
+	<input type='range' min={minimum} max={maximum} bind:value={end}>
 	<div class='background'></div>
 </div>
 

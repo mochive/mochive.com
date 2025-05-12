@@ -5,42 +5,67 @@
 	import AnticlockwiseDownwardsAndUpwardsOpenCircleArrows from '$lib/assets/anticlockwiseDownwardsAndUpwardsOpenCircleArrows.svg?component';
 	import { fade } from 'svelte/transition';
 	import Preview from './preview.svelte';
-	import type { Writable } from 'svelte/store';
+  import type { Component } from 'svelte';
+  import type { SVGAttributes } from 'svelte/elements';
+	import { loadImage } from '$lib/utility';
 
-	export let exam: Exam;
-	export let previewUrl: Writable<string | undefined>;
+	let {
+		exam,
+		previewUrl: parentPreviewUrl = $bindable()
+	}: {
+		exam: Exam;
+		previewUrl: string | undefined;
+	} = $props();
 
-	let data: [ExamRank[], ExamAsset[]] | null | undefined;
-	let details!: HTMLDetailsElement;
+	let data: [ExamRank[], ExamAsset[]] | null | undefined = $state<[ExamRank[], ExamAsset[]] | null | undefined>();
+	let details: HTMLDetailsElement = $state<HTMLDetailsElement>() as HTMLDetailsElement;
+	let previewUrl: string | undefined = $state<string>();
+
+	const Paper: Component<SVGAttributes<SVGSVGElement>> = $derived(PAPERS[exam['subject'] - 1]);
 </script>
 
 <details bind:this={details} transition:fade>
-	<summary on:click={function (event) {
+	<summary onclick={function (event: Event): void {
 		if(!Array.isArray(data)) {
 			event.preventDefault();
 			
 			data = null;
 
 			Promise.all([fetch('/api/exams/' + exam['id'] + '/ranks'), fetch('/api/exams/' + exam['id'] + '/assets')])
-			.then(function (responses) {
+			.then(function (responses: [Response, Response]): Promise<[{
+				status: 'success',
+				data: ExamRank[]
+			}, {
+				status: 'success',
+				data: ExamAsset[]
+			}]> {
 				if(responses[0]['status'] === 200 && responses[1]['status'] === 200) {
 					return Promise.all([responses[0].json(), responses[1].json()]);
 				} else {
 					throw responses;
 				}
 			})
-			.then(function (responseJsons) {
+			.then(function (responseJsons: [{
+				status: 'success',
+				data: ExamRank[]
+			}, {
+				status: 'success',
+				data: ExamAsset[]
+			}]): Promise<string> {
 				data = [responseJsons[0]['data'], responseJsons[1]['data']];
+
+				return loadImage('https://cdn.mochive.com' + data[1][0]['path'] + '.small.webp');
+			})
+			.then(function (imageUrl: string): void {
+				previewUrl = imageUrl;
 				details['open'] = true;
-				
-				return ;
 			})
 			.catch(console.error);
 		}
 	
 		return;
 	}}>
-		<svelte:component this={PAPERS[exam['subject'] - 1]} class='paper' />
+		<Paper class='paper' />
 		<section class='title'>
 			<h1>{exam['name']}</h1>
 			<div class='meta'>
@@ -52,7 +77,7 @@
 			</div>
 		</section>
 		<button class='folder'>
-			{#if typeof(data) === 'undefined' || details['open']}
+			{#if data === undefined || previewUrl !== undefined}
 				<EjectSymbol class='status' />
 			{:else}
 				<AnticlockwiseDownwardsAndUpwardsOpenCircleArrows class='status loading' />
@@ -63,9 +88,9 @@
 		<div class='detail'>
 			<section class='preview'>
 				<h2>미리보기</h2>
-				<Preview source={'https://cdn.mochive.com' + data[1][0]['path'] + '.small.webp'} class='preview-small' on:click={function () {
+				<Preview source={previewUrl as string} class='preview-small' onclick={function (): void {
 					// @ts-expect-error
-					$previewUrl = 'https://cdn.mochive.com' + data[1][0]['path'] + '.webp';
+					parentPreviewUrl = 'https://cdn.mochive.com' + data[1][0]['path'] + '.webp';
 
 					return;
 				}}/>
@@ -73,38 +98,43 @@
 			<section>
 				<h2>등급컷</h2>
 				<table>
-					<tr>
-						<th>등급</th>
-						<th>원점수</th>
-						<th>표준점수</th>
-						<th>백분위</th>
-					</tr>
-					{#if data[0]['length'] !== 0}
-						{#each data[0] as rank}
-							<tr>
-								<td>{rank['grade']}</td>
-								{#each EXAM_RANK_SCORE_KEYS as key}
-									<td>{rank[key] !== -1 ? rank[key] : '-'}</td>
-								{/each}
-							</tr>
-						{/each}
-					{:else}
-						{#each { length: 10 } as _}
-							<tr>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-						{/each}
-					{/if}
+					<thead>
+						<tr>
+							<th>등급</th>
+							<th>원점수</th>
+							<th>표준점수</th>
+							<th>백분위</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#if data[0]['length'] !== 0}
+							{#each data[0] as rank}
+								<tr>
+									<td>{rank['grade']}</td>
+									{#each EXAM_RANK_SCORE_KEYS as key}
+										<td>{rank[key] !== -1 ? rank[key] : '-'}</td>
+									{/each}
+								</tr>
+							{/each}
+						{:else}
+							{#each { length: 10 } as _}
+								<tr>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+								</tr>
+							{/each}
+						{/if}
+					</tbody>
 				</table>
 			</section>
 			<section class='download'>
 				<h2>다운로드</h2>
 				<ul>
 					{#each data[1] as asset}
-						<li><a href={'https://' + (asset['type'] === 3 && exam['grade'] === 3 && (exam['month'] === 6 || exam['month'] === 9 || exam['month'] === 11) || Number(exam['takenAt'].slice(0, 4)) >= 2024 && (asset['type'] === 2 || asset['type'] === 3) ? 'wdown.ebsi.co.kr/W61001/01exam' : 'cdn.mochive.com') + asset['path']} target='_blank' class='button'><svelte:component this={BUTTONS[asset['type'] - 1][0]} height=45 />{BUTTONS[asset['type'] - 1][1]}</a></li>
+						{@const Icon: Component<SVGAttributes<SVGSVGElement>> = BUTTONS[asset['type'] - 1][0]}
+						<li><a href={'https://' + (asset['type'] === 3 && exam['grade'] === 3 && (exam['month'] === 6 || exam['month'] === 9 || exam['month'] === 11) || Number(exam['takenAt'].slice(0, 4)) >= 2024 && (asset['type'] === 2 || asset['type'] === 3) ? 'wdown.ebsi.co.kr/W61001/01exam' : 'cdn.mochive.com') + asset['path']} target='_blank' class='button'><Icon height=45 />{BUTTONS[asset['type'] - 1][1]}</a></li>
 					{/each}
 					{#each { length: 5 - data[1]['length'] } as _}
 						<li></li>
@@ -116,10 +146,37 @@
 </details>
 
 <style>
-	:global(button.preview-small) {
-		cursor: zoom-in;
-		height: 400px;
-		width: 282.77px;
+	:global {
+		button.preview-small {
+			cursor: zoom-in;
+			height: 400px;
+			width: 282.77px;
+		}
+
+		svg {
+			flex-shrink: 0;
+		}
+
+		svg.status {
+			height: 32px;
+		}
+
+		details[open] svg.status {
+			transform: rotate(180deg);
+		}
+
+		svg.loading {
+			animation: rotate 1s linear infinite;
+		}
+
+		a.button > svg {
+			margin-top: 4px;
+		}
+
+		svg.paper {
+			height: 80px;
+			margin-left: 20px;
+		}
 	}
 
 	details {
@@ -176,9 +233,11 @@
 			grid-column: 2 / 3;
 		}
 		
-		:global(img.preview-big-image) {
-			min-height: 600px;
-			min-width: 424.16px;
+		:global {
+			img.preview-big-image {
+				min-height: 600px;
+				min-width: 424.16px;
+			}
 		}
 	}
 	
@@ -187,8 +246,24 @@
 			transition: height 740ms ease-in-out;
 		}
 
-		:global(svg.paper) {
-			height: 75px !important;
+		:global {
+			svg.paper {
+				height: 75px !important;
+			}
+
+			svg.status {
+				height: 30px !important;
+			}
+
+			svg.paper {
+				margin: 0 !important;
+				align-self: start;
+			}
+
+			img.preview-big-image {
+				min-height: 500px;
+				min-width: 353.46px;
+			}
 		}
 
 		button.folder {
@@ -196,15 +271,12 @@
 			height: 46.875px !important;
 		}
 
-		:global(svg.status) {
-			height: 30px !important;
-		}
 
 		h1 {
 			font-size: 25px !important;
 		}
 
-		:global(svg.paper), button.folder, section.title {
+		button.folder, section.title {
 			margin: 0 !important;
 		}
 		
@@ -215,10 +287,6 @@
 			grid-template-rows: auto 1fr auto;
 			flex-direction: column;
 			height: 280px !important;
-		}
-
-		:global(svg.paper) {
-			align-self: start;
 		}
 
 		button.folder {
@@ -242,11 +310,6 @@
 		section.download {
 			grid-column: auto;
 		}
-
-		:global(img.preview-big-image) {
-			min-height: 500px;
-			min-width: 353.46px;
-		}
 	}
 
 	@media (max-width: 400px) {
@@ -255,9 +318,11 @@
 			overflow-y: scroll;
 		}
 
-		:global(img.preview-big-image) {
-			min-height: 450px;
-			min-width: 318.12px;
+		:global {
+			img.preview-big-image {
+				min-height: 450px;
+				min-width: 318.12px;
+			}
 		}
 	}
 
@@ -284,11 +349,6 @@
 		background-color: #e7e7f1;
 	}
 
-	:global(svg.paper) {
-		height: 80px;
-		margin-left: 20px;
-	}
-
 	button.folder {
 		cursor: pointer;
 		border: 0;
@@ -303,21 +363,6 @@
 		pointer-events: none;
 	}
 
-	:global(svg) {
-		flex-shrink: 0;
-	}
-
-	:global(svg.status) {
-		height: 32px;
-	}
-
-	:global(details[open] svg.status) {
-		transform: rotate(180deg);
-	}
-
-	:global(svg.loading) {
-		animation: rotate 1s linear infinite;
-	}
 
 	h1 {
 		font-size: 28px;
@@ -365,14 +410,18 @@
 		background-color: #5b646e;
 		color: #ffffff;
 		border-radius: 10px;
-		table-layout: fixed;
 		font-size: 16px;
-		height: 400px;
+		table-layout: fixed;
+		border-spacing: 0;
 		width: 250px;
 	}
 	
 	table * {
 		font-weight: 300;
+	}
+
+	tr {
+		height: 36.36px;
 	}
 	
 	ul {
@@ -413,9 +462,5 @@
 
 	a.button:active {
 		background-color: #464d56;
-	}
-
-	:global(a.button > svg) {
-		margin-top: 4px;
 	}
 </style>

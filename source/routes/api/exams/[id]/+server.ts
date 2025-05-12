@@ -21,7 +21,7 @@ export function GET(event: RequestEvent<{
 			.where('id', '=', id)
 			.executeTakeFirst()
 			.then(function (rawExam?: Exam): Promise<[Pick<ExamAsset, 'id' | 'type' | 'path'>[], Pick<ExamRank, 'id' | 'grade' | 'rawScore' | 'standardScore' | 'percentile'>[]]> {
-				if(typeof(rawExam) !== 'undefined') {
+				if(rawExam !== undefined) {
 					exam = rawExam;
 
 					return Promise.all([transaction.selectFrom('exam_asset')

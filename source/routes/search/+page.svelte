@@ -4,22 +4,24 @@
 	import Logo from '$lib/assets/logo.svg?component';
 	import Footer from '$lib/components/footer.svelte';
 	import Loader from '$lib/components/loader.svelte';
-	import { writable, type Writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import Preview from '$lib/components/preview.svelte';
+	import { loadImage } from '$lib/utility';
 
-	export let data: {
-		query: string;
-		exams: ExamType[];
-	};
+	let { data = $bindable() }: {
+		data: {
+			query: string;
+			exams: ExamType[];
+		};
+	} = $props();
 
-	let index: number = data['exams']['length'] === 50 ? 1 : -1;
-	const previewUrl: Writable<string | undefined> = writable<string | undefined>();
+	let index: number = $state(data['exams']['length'] === 50 ? 1 : -1);
+	let previewUrl: string | undefined = $state<string>();
 </script>
 
-<svelte:window on:keydown={function (event) {
+<svelte:window onkeydown={function (event: KeyboardEvent): void {
 	if(event['keyCode'] === 27) {
-		$previewUrl = undefined;
+		previewUrl = undefined;
 	}
 	
 	return;
@@ -28,41 +30,52 @@
 	<a href="/"><Logo height=40 /></a>
 </nav>
 <main>
-	{#if typeof($previewUrl) !== 'undefined'}
-		<button class='overlay' transition:fade on:click={function (event) {
-			$previewUrl = undefined;
-
+	{#if previewUrl !== undefined}
+		<button class='overlay' transition:fade onclick={function (): void {
+			previewUrl = undefined;
+			
 			return;
 		}}>
-			<Preview source={$previewUrl} class='preview-big' />
+			{#await loadImage(previewUrl as string) then}
+				<Preview source={previewUrl} class='preview-big' />
+			{/await}
 		</button>
 	{/if}
 	<ul>
 		{#each data['exams'] as exam, _index}
 			<li>
-				<Exam exam={exam} previewUrl={previewUrl} />
+				<Exam exam={exam} bind:previewUrl={previewUrl} />
 			</li>
 
 			{#if index !== -1 && _index === data['exams']['length'] - 1}
-				<Loader on:visible={function () {
+				<Loader onvisible={function (): void {
 					fetch('/api/exams?' + data['query'] + '&page[index]=' + index++)
-					.then(function (response) {
+					.then(function (response: Response): Promise<{
+						status: 'success',
+						data: ExamType[]
+					}> {
 						if(response['status'] === 200) {
 							return response.json();
 						} else {
 							throw response;
 						}
 					})
-					.then(function (responseJson) {
+					.then(function (responseJson: {
+						status: 'success',
+						data: ExamType[]
+					}): void {
 						if(responseJson['data']['length'] !== 0) {
-							data['exams'] = data['exams'].concat(responseJson['data']);
+							data = {
+								query: data['query'],
+								exams: data['exams'].concat(responseJson['data'])
+							};
 						} else {
 							index = -1;
 						}
 		
 						return;
 					})
-					.catch(function (error) {
+					.catch(function (error: unknown): void {
 						index = -1;
 
 						console.error(error);
@@ -92,15 +105,18 @@
 		place-items: center;
 	}
 
-	:global(button.preview-big) {
-		cursor: zoom-out;
+	:global {
+		button.preview-big {
+			cursor: zoom-out;
+		}
+
+		button.preview-big > img {
+			max-width: calc(100vw - 32px);
+			max-height: calc(100vh - 64px);
+			pointer-events: none;
+		}
 	}
 
-	:global(button.preview-big > img) {
-		max-width: calc(100vw - 32px);
-		max-height: calc(100vh - 64px);
-		pointer-events: none;
-	}
 
 	@keyframes -global-rotate {
 		from {

@@ -4,11 +4,11 @@
 	import Footer from '$lib/components/footer.svelte';
 	import { EMAIL_REGULAR_EXPRESSION } from '$lib/constant';
 
-	let turnstile!: HTMLFieldSetElement;
-	let email!: HTMLInputElement;
-	let content!: HTMLTextAreaElement;
+	let turnstile: HTMLFieldSetElement = $state() as HTMLFieldSetElement;
+	let email: string = $state() as string;
+	let content: string = $state() as string;
 
-	onMount(function () {
+	onMount(function (): void {
 		const script: HTMLScriptElement = document.createElement('script');
 		
 		script['src'] = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
@@ -31,17 +31,17 @@
 				<h2>1</h2>
 			</section>
 		</header>
-		<form action='/api/reports' method='post' on:submit={function (event) {
+		<form action='/api/reports' method='post' onsubmit={function (event: SubmitEvent): void {
 			event.preventDefault();
 		
-			if(content['value']['length'] >= 1 && content['value']['length'] <= 2048) {
-				if(EMAIL_REGULAR_EXPRESSION.test(email['value'])) {
+			if(content['length'] >= 1 && content['length'] <= 2048) {
+				if(EMAIL_REGULAR_EXPRESSION.test(email)) {
 					if('cf-turnstile-response' in turnstile['children']) {
 						fetch('/api/reports', {
 							method: 'POST',
 							body: JSON.stringify({
-								email: email['value'],
-								content: content['value'],
+								email: email,
+								content: content,
 								// @ts-expect-error
 								token: turnstile['children']['cf-turnstile-response']['value']
 							})
@@ -67,13 +67,13 @@
 			return;
 		}}>
 			<label for='email'><b><i>1.</i></b> 다음 글의 답변을 받을 메일로 가장 적절한 것은?</label>
-			<textarea placeholder='내용을 작성하시오.' minlength=1 maxlength=2048 required bind:this={content}></textarea>
+			<textarea placeholder='내용을 작성하시오.' minlength=1 maxlength=2048 required bind:value={content}></textarea>
 			<ol>
 				<li>① 모카이브를 사용해주셔서 정말 감사드립니다!</li>
 				<li>② 이 사이트는 학생 1인 개발이기에 여러 오류가 있을 수 있습니다.</li>
 				<li>③ 파일, 등급컷 등의 간단한 오류는 이 페이지를 통해 신고해주시고,</li>
 				<li>④ 첨부 파일이 필요한 경우는 <a href='mailto:support@mochive.com'>메일</a>로 신고를 부탁드리겠습니다.</li>
-				<li>⑤<span>✓</span><input type='email' id='email' placeholder='메일을 작성하시오.' required bind:this={email}></li>
+				<li>⑤<span>✓</span><input type='email' id='email' placeholder='메일을 작성하시오.' required bind:value={email}></li>
 			</ol>
 			<section id='notice'>
 				<h4>※ 확인 사항</h4>

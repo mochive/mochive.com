@@ -4,7 +4,7 @@ import { sql, type SelectQueryBuilder } from 'kysely';
 import type { RequestEvent } from '../$types';
 import { getJsendResponse } from '$lib/utility';
 import { JsendStatus, MONTHS } from '$lib/constant';
-import type { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
+import type { estypes } from '@elastic/elasticsearch';
 
 export function GET(event: RequestEvent): Promise<Response> | Response {
 	try {
@@ -47,7 +47,7 @@ export function GET(event: RequestEvent): Promise<Response> | Response {
 				}
 			}
 		})
-		.then(function (result: SearchResponse): number[] {
+		.then(function (result: estypes.SearchResponse): number[] {
 			const ids: number[] = [];
 
 			if(result['hits']['hits']['length'] !== 0) {

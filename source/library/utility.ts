@@ -122,3 +122,20 @@ export function getJsendResponse(data: unknown, status: JsendStatus = JsendStatu
 		}
 	});
 }
+
+export function loadImage(url: string): Promise<string> {
+	return new Promise<string>(function (resolve: (value: string) => void, reject: (reason?: unknown) => void): void {
+		const image = new Image();
+
+		image['src'] = url;
+
+		image.addEventListener('load', function (): void {
+			resolve(url);
+
+			return;
+		});
+		image.addEventListener('error', reject);
+
+		return;
+	});
+}
