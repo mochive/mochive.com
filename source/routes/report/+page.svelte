@@ -12,6 +12,7 @@
 		const script: HTMLScriptElement = document.createElement('script');
 		
 		script['src'] = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+		script['crossOrigin'] = '';
 		
 		document['head'].appendChild(script);
 		
